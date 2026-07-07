@@ -1,0 +1,10 @@
+import pg from 'pg';
+import { config } from 'dotenv';
+config({ path: '.env.local' });
+const c = new pg.Client({ connectionString: process.env.DATABASE_URL });
+await c.connect();
+const r = await c.query("SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename");
+console.log('Tables in Neon:');
+for (const row of r.rows) console.log('  •', row.tablename);
+console.log('\nTotal:', r.rows.length, 'tables');
+await c.end();
